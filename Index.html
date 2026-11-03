@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06131c">
+  <meta name="description" content="Invita Bressh.Bot a tu servidor de Discord.">
+  <title>Bressh.Bot — Discord Bot</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --cyan: #54eaff;
+      --cyan-bright: #a4f6ff;
+      --bg: #06131c;
+      --panel: rgba(8, 29, 41, 0.82);
+      --muted: #91b9c4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      color: #e9fcff;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(0, 204, 255, .18), transparent 48%),
+        linear-gradient(145deg, #06131c, #071b28 55%, #041018);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      opacity: .18;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(84, 234, 255, .12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(84, 234, 255, .12) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    .glow {
+      position: fixed;
+      z-index: -1;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: rgba(0, 207, 255, .12);
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    .glow-one {
+      top: 8%;
+      left: -120px;
+    }
+
+    .glow-two {
+      right: -120px;
+      bottom: 4%;
+    }
+
+    main {
+      width: min(100%, 720px);
+      padding: 48px 38px 30px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      background: var(--panel);
+      border: 1px solid rgba(84, 234, 255, .3);
+      border-radius: 24px;
+      box-shadow:
+        0 0 55px rgba(0, 207, 255, .1),
+        0 24px 80px rgba(0, 0, 0, .45),
+        inset 0 0 30px rgba(84, 234, 255, .035);
+      backdrop-filter: blur(14px);
+    }
+
+    main::before {
+      position: absolute;
+      top: 0;
+      left: 12%;
+      width: 76%;
+      height: 2px;
+      content: "";
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 18px var(--cyan);
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    .bot-icon {
+      width: 94px;
+      height: 94px;
+      margin: 26px auto 18px;
+      display: grid;
+      place-items: center;
+      color: var(--cyan-bright);
+      background: linear-gradient(145deg, #0d3445, #071923);
+      border: 1px solid rgba(84, 234, 255, .7);
+      border-radius: 26px;
+      box-shadow:
+        0 0 28px rgba(84, 234, 255, .2),
+        inset 0 0 22px rgba(84, 234, 255, .08);
+      font-size: 48px;
+      transform: rotate(-4deg);
+    }
+
+    h1 {
+      margin: 0;
+      color: #f1fdff;
+      font-size: clamp(42px, 9vw, 72px);
+      font-weight: 950;
+      letter-spacing: -.07em;
+      line-height: 1;
+      text-shadow: 0 0 28px rgba(84, 234, 255, .25);
+    }
+
+    h1 span {
+      color: var(--cyan);
+    }
+
+    .tagline {
+      margin: 16px 0 0;
+      color: var(--cyan-bright);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    .description {
+      max-width: 500px;
+      margin: 20px auto 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .invite-button {
+      min-height: 56px;
+      margin-top: 30px;
+      padding: 0 25px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      color: #03151d;
+      background: linear-gradient(100deg, #a4f6ff, #42dff5);
+      border: 1px solid #c8fbff;
+      border-radius: 12px;
+      box-shadow: 0 0 28px rgba(84, 234, 255, .28);
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .invite-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 38px rgba(84, 234, 255, .48);
+    }
+
+    .invite-button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 4px;
+    }
+
+    .features {
+      margin-top: 38px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      text-align: left;
+    }
+
+    .feature {
+      min-height: 102px;
+      padding: 16px 14px;
+      background: rgba(5, 23, 33, .72);
+      border: 1px solid rgba(84, 234, 255, .16);
+      border-radius: 14px;
+    }
+
+    .feature-icon {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--cyan);
+      font-size: 18px;
+    }
+
+    .feature strong {
+      display: block;
+      color: #e9fcff;
+      font-size: 13px;
+    }
+
+    .feature span {
+      display: block;
+      margin-top: 5px;
+      color: #83aab5;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .note {
+      margin: 22px 0 0;
+      color: #789ba5;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: #557985;
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 560px) {
+      main {
+        padding: 38px 20px 25px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .feature {
+        min-height: auto;
+        text-align: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow glow-one" aria-hidden="true"></div>
+  <div class="glow glow-two" aria-hidden="true"></div>
+
+  <main>
+    <div class="topline">
+      <span class="online-dot" aria-hidden="true"></span>
+      Discord bot
+    </div>
+
+    <div class="bot-icon" aria-hidden="true">🤖</div>
+
+    <h1>Bressh<span>.</span>Bot</h1>
+    <p class="tagline">Tryhard mode: activado</p>
+
+    <p class="description">
+      Potencia tu servidor de Discord. Añade Bressh.Bot y prepárate
+      para llevar tu comunidad al siguiente nivel.
+    </p>
+
+    <a
+      class="invite-button"
+      href="https://discord.com/oauth2/authorize?client_id=1567008361613107261&permissions=8858438710&response_type=code&redirect_uri=https%3A%2F%2Fdiscord.com%2Foauth2%2Fauthorized&integration_type=0&scope=applications.commands+bot"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span aria-hidden="true">⚡</span>
+      INVITAR A DISCORD
+      <span aria-hidden="true">↗</span>
+    </a>
+
+    <section class="features" aria-label="Información">
+      <div class="feature">
+        <span class="feature-icon" aria-hidden="true">◈</span>
+        <strong>Instalación rápida</strong>
+        <span>Elige tu servidor desde Discord.</span>
+      </div>
+
+      <div class="feature">
+        <span class="feature-icon" aria-hidden="true">⌘</span>
+        <strong>Comandos slash</strong>
+        <span>Usa los comandos disponibles del bot.</span>
+      </div>
+
+      <div class="feature">
+        <span class="feature-icon" aria-hidden="true">◇</span>
+        <strong>Tu comunidad</strong>
+        <span>Invítalo a los servidores que administras.</span>
+      </div>
+    </section>
+
+    <p class="note">
+      Discord mostrará los permisos solicitados antes de añadir el bot.
+      Revisa que sean los permisos que necesita.
+    </p>
+
+    <footer>BRESSH.BOT · HECHO PARA DISCORD</footer>
+  </main>
+</body>
+  </html>
